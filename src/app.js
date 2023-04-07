@@ -3,18 +3,52 @@ import cors from 'cors';
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
-app.get("/", (request, response) => {
-    response.send("hello")
-})
+const tweets = []
+const users = []
+let auth = false
+
 app.get("/tweets", (request, response) => {
-    response.send([
-        {
-            username: "bobesponja",
-            avatar: "https://cdn.shopify.com/s/files/1/0150/0643/3380/files/Screen_Shot_2019-07-01_at_11.35.42_AM_370x230@2x.png",
-            tweet: "Eu amo hambúrguer de siri!"
-        }
-    ])
+    const retornarTweets = []
+    console.log(tweets)
+    tweets.forEach((tw) => {
+        const findUser = users.find((user) => user.username === tw.username)
+        retornarTweets.push({
+            username: tw.username,
+            avatar: findUser.avatar,
+            tweet: tw.tweet
+        })
+    })
+    response.send(retornarTweets)
+})
+
+
+
+app.post("/sign-up", (request, response) => {
+    const { username, avatar } = request.body
+    const login = {
+        username,
+        avatar
+    }
+    users.push(login)
+    console.log(users)
+    auth = true
+    response.send("OK")
+})
+
+app.post("/tweets", (request, response) => {
+    const { username, tweet } = request.body
+    const tweetPost = { username, tweet }
+    if (auth) {
+        tweets.push(tweetPost)
+        console.log(tweets)
+        response.send("OK")
+    }
+    else {
+        response.send("UNAUTHORIZED")
+    }
+
 })
 const port = 5000
-app.listen(port, ()=> console.log(`servidor rodando na porta ${port}`))
+app.listen(port, () => console.log(`servidor rodando na porta ${port}`))
