@@ -11,8 +11,7 @@ let auth = false
 
 app.get("/tweets", (request, response) => {
     const retornarTweets = []
-    console.log(tweets)
-    tweets.forEach((tw) => {
+    tweets.slice(-10).forEach((tw) => {
         const findUser = users.find((user) => user.username === tw.username)
         retornarTweets.push({
             username: tw.username,
@@ -42,7 +41,6 @@ app.post("/tweets", (request, response) => {
     const tweetPost = { username, tweet }
     if (auth) {
         tweets.push(tweetPost)
-        console.log(tweets)
         response.send("OK")
     }
     else {
