@@ -30,21 +30,27 @@ app.post("/sign-up", (request, response) => {
         username,
         avatar
     }
+    if(!username || !avatar || typeof(username) !== "string" || typeof(avatar) !== "string"){
+       return response.status(400).send("Todos os campos são obrigatórios!")
+    }
     users.push(login)
     console.log(users)
     auth = true
-    response.send("OK")
+    response.status(201).send("OK")
 })
 
 app.post("/tweets", (request, response) => {
     const { username, tweet } = request.body
     const tweetPost = { username, tweet }
+    if(!username || !tweet || typeof(username) !== "string" || typeof(tweet) !== "string"){
+        return response.status(400).send("Todos os campos são obrigatórios!")
+     }
     if (auth) {
         tweets.push(tweetPost)
-        response.send("OK")
+        response.status(201).send("OK")
     }
     else {
-        response.send("UNAUTHORIZED")
+        response.status(401).send("UNAUTHORIZED")
     }
 
 })
